@@ -1,0 +1,28 @@
+function openSimpleBlockDetails(description) {
+    fetch('../Widget/Applications?status=' + description)
+        .then(r => r.text())   // read as plain text first
+        .then(t => {
+            try {
+                let d = JSON.parse(t);   // try parsing JSON
+                let count = (d && d.Data) ? d.Data.length : 0;
+
+                document.getElementById("modalTitle").innerText =
+                    "Applications (" + count + ")";
+
+                document.getElementById("modalBody").innerHTML =
+                    "<pre>" + JSON.stringify(d, null, 2) + "</pre>";
+            } catch (e) {
+                // If not valid JSON → show raw response
+                console.warn("Not JSON:", e);
+                document.getElementById("modalTitle").innerText = "Raw Response";
+                document.getElementById("modalBody").innerHTML =
+                    "<pre>" + t + "</pre>";
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            document.getElementById("modalTitle").innerText = "Error";
+            document.getElementById("modalBody").innerHTML =
+                `<div class="alert alert-danger">Error loading details.</div>`;
+        });
+}
