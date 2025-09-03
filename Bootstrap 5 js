@@ -1,0 +1,24 @@
+function openSimpleBlockDetails(description) {
+    document.getElementById("modalTitle").innerText = description;
+    document.getElementById("modalBody").innerHTML = "<p>Loading...</p>";
+
+    fetch('../Widget/Applications?status=' + encodeURIComponent(description))
+        .then(response => response.json())   // ✅ Parse JSON instead of text
+        .then(data => {
+            // Build HTML manually from JSON
+            let html = "<ul class='list-group'>";
+            data.forEach(item => {
+                html += `<li class="list-group-item">${item.Name} - ${item.Status}</li>`;
+            });
+            html += "</ul>";
+            document.getElementById("modalBody").innerHTML = html;
+        })
+        .catch(err => {
+            document.getElementById("modalBody").innerHTML = "<p class='text-danger'>Error loading details</p>";
+            console.error(err);
+        });
+
+    var modalElement = document.getElementById('simpleBlockModal');
+    var modal = new bootstrap.Modal(modalElement);
+    modal.show();
+}
