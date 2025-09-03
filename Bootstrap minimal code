@@ -1,0 +1,37 @@
+function openSimpleBlockDetails(description) {
+    fetch('../Widget/Applications?status=' + description)
+        .then(r => r.json())
+        .then(d => {
+            document.getElementById("modalTitle").innerText = "API Response";
+            document.getElementById("modalBody").innerHTML =
+                "<pre>" + JSON.stringify(d, null, 2) + "</pre>";
+        })
+        .catch(err => {
+            console.error(err);
+            document.getElementById("modalTitle").innerText = "Error";
+            document.getElementById("modalBody").innerHTML =
+                `<div class="alert alert-danger">Error loading details.</div>`;
+        });
+}
+
+function openSimpleBlockDetails(description) {
+    fetch('../Widget/Applications?status=' + description)
+        .then(r => r.json())
+        .then(d => {
+            let count = (d && d.Data) ? d.Data.length : 0;
+
+            // Modal Title
+            document.getElementById("modalTitle").innerText =
+                "Applications (" + count + ")";
+
+            // Show raw JSON
+            document.getElementById("modalBody").innerHTML =
+                "<pre>" + JSON.stringify(d, null, 2) + "</pre>";
+        })
+        .catch(err => {
+            console.error(err);
+            document.getElementById("modalTitle").innerText = "Error";
+            document.getElementById("modalBody").innerHTML =
+                `<div class="alert alert-danger">Error loading details.</div>`;
+        });
+}
