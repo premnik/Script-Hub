@@ -1,0 +1,64 @@
+<div class="card @Model.PanelStyle">
+    <div class="card-header">
+        <div class="row mb-3">
+            <div class="col-3">
+                <i class="fa @Model.FontAwesomeIcon fa-4x"></i>
+            </div>
+            <div class="col-9 text-end">
+                <div class="display-4">@Model.Count</div>
+                <div>@Model.Description</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-footer d-flex justify-content-between align-items-center">
+        <span class="text-start" onclick="openSimpleBlockDetails('@Model.Description')">
+            View Details
+        </span>
+        <span class="text-end"><i class="fa fa-arrow-circle-right"></i></span>
+    </div>
+</div>
+
+<br />
+
+<!-- ✅ Modal block added here -->
+<div class="modal fade" id="simpleBlockModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitle"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- Content will be loaded dynamically -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ Script -->
+<script>
+function openSimpleBlockDetails(description) {
+    // Set modal title
+    document.getElementById("modalTitle").innerText = description;
+
+    // Temporary loading text
+    document.getElementById("modalBody").innerHTML = "<p>Loading...</p>";
+
+    // Fetch dynamic content
+    fetch('../Widget/Applications?status=' + encodeURIComponent(description))
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById("modalBody").innerHTML = html;
+        })
+        .catch(err => {
+            document.getElementById("modalBody").innerHTML = "<p class='text-danger'>Error loading details</p>";
+            console.error(err);
+        });
+
+    // Show modal using Bootstrap 5
+    var modalElement = document.getElementById('simpleBlockModal');
+    var modal = new bootstrap.Modal(modalElement);
+    modal.show();
+}
+</script>
