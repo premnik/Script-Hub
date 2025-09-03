@@ -1,0 +1,59 @@
+function openSimpleBlockDetails(description) {
+    fetch('../Widget/Applications?status=' + description)
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("modalTitle").innerText = "Applications";
+
+            if (data && data.Data && data.Data.length > 0) {
+                let rows = data.Data.map(app => `
+                    <tr>
+                        <td>${app.AIT}</td>
+                        <td>${app.ApplicationName}</td>
+                        <td>${app.UserAdminEmailAddress}</td>
+                        <td>${app.ApplicationURL}</td>
+                        <td>${app.ApplicationCategoryText}</td>
+                        <td>${app.OnBoardingStatus}</td>
+                        <td>${app.Comments}</td>
+                        <td>${app.Csab?.Subscribed ? "Yes" : "No"}</td>
+                        <td>${app.Csab?.JobScheduleDateTime || ""}</td>
+                        <td>${app.Csab?.JobScheduledTime?.Hours}:${app.Csab?.JobScheduledTime?.Minutes}:${app.Csab?.JobScheduledTime?.Seconds}</td>
+                    </tr>
+                `).join("");
+
+                let table = `
+                    <table class="table table-bordered table-striped table-sm">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>AIT</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>URL</th>
+                                <th>Category</th>
+                                <th>Status</th>
+                                <th>Comments</th>
+                                <th>Subscribed</th>
+                                <th>Job Schedule Date</th>
+                                <th>Job Scheduled Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                `;
+
+                document.getElementById("modalBody").innerHTML = table;
+            } else {
+                document.getElementById("modalBody").innerHTML =
+                    `<div class="alert alert-warning">No applications found.</div>`;
+            }
+
+            var modalElement = document.getElementById("simpleModal");
+            var modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+            modal.show();
+        })
+        .catch(err => {
+            console.error("Error loading data:", err);
+            document.getElementById("modalTitle").innerText = "Error";
+            document.getElementById("modalBody").innerHTML =
+                `<div class="alert alert-danger">Could not load details.</div>`;
+        });
+}
