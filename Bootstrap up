@@ -1,0 +1,16 @@
+function openSimpleBlockDetails(description) {
+    fetch('../Widget/Applications?status=' + description)
+        .then(response => response.text())   // ✅ Get response as HTML
+        .then(html => {
+            document.getElementById("modalTitle").innerText = "Applications";
+            document.getElementById("modalBody").innerHTML = html; // ✅ Direct embed
+            var modal = new bootstrap.Modal(document.getElementById("simpleModal"));
+            modal.show();
+        })
+        .catch(error => {
+            console.error("Error loading data:", error);
+            document.getElementById("modalTitle").innerText = "Error";
+            document.getElementById("modalBody").innerHTML =
+                `<div class="alert alert-danger">Error loading details.</div>`;
+        });
+}
